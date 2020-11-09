@@ -1,0 +1,55 @@
+.main-container{
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.col-container{
+  overflow: auto;
+  position: relative;
+}
+.col-left{
+  float: left;
+  width: 50%;
+}
+.col-left-40{
+  float: left;
+  width: 40%;
+}
+.col-right{
+  float: right;
+  width: 50%;
+}
+.col-bottom{
+  position: absolute;
+  bottom: 0px;
+}
+.big-number{
+  font-size: 95px;
+}
+.medium-number{
+  font-size: 40px;
+}
+.text-center{
+  text-align: center;
+}
+.text-right{
+  text-align: right;
+}
+.text-left{
+  text-align: left;
+}
+.vertical-small-padding{
+  padding: 0 15px 0 15px;
+}
+.minnor-header{
+  font-size: 18px;
+}
+.text-color-medium-value{
+  color: #585859;
+}
+.text-color-big-value{
+  color: #31708f;
+}
+.test-rule{
+  color: red;
+}

@@ -1,3 +1,10 @@
+---
+title: 'TIPTOP Enquête de Sortie de la CPN - Rapport de Qualité de Données: RDC - KENGE'
+author: "Máximo Ramírez Robles"
+output: 
+  html_document: 
+    css: style.css
+---
 ```{r parameters, include=FALSE}
 source("tiptop_exit_survey_quality.R")
 source("tokens.R")
@@ -18,10 +25,7 @@ file.time    <- "15:42"
 data.timestamp <- DataTimestamp(data.retrieval.mode, file.date, file.time)
 ```
 ---
-title: 'TIPTOP Enquête de Sortie de la CPN - Rapport de Qualité de Données: RDC - KENGE'
-author: "Máximo Ramírez Robles"
 date: `r data.timestamp`
-output: html_document
 ---
 
 ```{r setup, include=FALSE}
