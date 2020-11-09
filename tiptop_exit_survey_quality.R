@@ -88,3 +88,15 @@ LastRecordDate <- function(data) {
   #   String indicating the date of the last interview done.
   return(max(as.character(data$interview_date), na.rm = T))
 }
+
+
+NumberOfRecords <- function(data) {
+  # Get the number of records uploaded to REDCap.
+  #
+  # Args:
+  #   data: Data frame containing the study data set.
+  #
+  # Returns:
+  #   Int indicating how many records/interviews have been already done.
+  return(nrow(data))
+}

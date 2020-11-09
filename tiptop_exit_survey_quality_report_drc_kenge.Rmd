@@ -51,7 +51,7 @@ data <- data[data$district == study.area.id, ]
 data <- data[!is.na(data$record_id), ]
 
 last.record.date <- LastRecordDate(data)
-number.of.records <- 0 # numberOfRecords(hhs_data)
+number.of.records <- NumberOfRecords(data)
 ```
 
 ## PROGRÈS DE LA COLLECTE DE DONNÉES SUR TERRAIN
