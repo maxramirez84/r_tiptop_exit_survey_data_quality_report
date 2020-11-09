@@ -1,12 +1,26 @@
 ```{r parameters, include=FALSE}
 source("tiptop_exit_survey_quality.R")
 source("tokens.R")
+
+# Data retrieval: {api, file}
+data.retrieval.mode <- "api"
+
+# API
+api.url   <- kREDCapAPIURL
+api.token <- kAPITokenDRC # TIPTOP Cost-Effectiveness Exit Survey DRC
+
+# File
+file.prefix  <- "DATA/DATA_WITH_NO_DUPS/XXX"
+file.content <- "_DATA_WITH_NO_DUPS_"
+file.date    <- "2018-06-19"
+file.time    <- "15:42"
+
+data.timestamp <- DataTimestamp(data.retrieval.mode, file.date, file.time)
 ```
 ---
-title: 'TIPTOP Enquête de Sortie de la CPN - Rapport de Qualité de Données: RDC -
-  KENGE'
+title: 'TIPTOP Enquête de Sortie de la CPN - Rapport de Qualité de Données: RDC - KENGE'
 author: "Máximo Ramírez Robles"
-date: "9 de noviembre de 2020"
+date: `r data.timestamp`
 output: html_document
 ---
 
