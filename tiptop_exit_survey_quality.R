@@ -75,3 +75,16 @@ ReadData <- function(data.retrieval.mode, file.prefix = "",
   
   return(data)
 }
+
+
+# Get the timestamp of the last collected record
+LastRecordDate <- function(data) {
+  # Get the timestamp of the last collected record.
+  #
+  # Args:
+  #   data: Data frame containing the study data set.
+  #
+  # Returns:
+  #   String indicating the date of the last interview done.
+  return(max(as.character(data$interview_date), na.rm = T))
+}

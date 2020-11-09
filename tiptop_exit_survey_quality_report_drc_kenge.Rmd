@@ -50,7 +50,7 @@ data <- ReadData(data.retrieval.mode, file.prefix, file.content, file.date,
 data <- data[data$district == study.area.id, ]
 data <- data[!is.na(data$record_id), ]
 
-last.record.date <- 'yyyy-mm-dd'# LastRecordDate(hhs_data)
+last.record.date <- LastRecordDate(data)
 number.of.records <- 0 # numberOfRecords(hhs_data)
 ```
 
