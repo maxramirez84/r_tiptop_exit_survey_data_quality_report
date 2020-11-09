@@ -22,6 +22,16 @@ file.content <- "_DATA_WITH_NO_DUPS_"
 file.date    <- "2018-06-19"
 file.time    <- "15:42"
 
+# Varibles in dataset to be excluded and therefore not extracted
+non.retrieved.variables <- c()
+
+# Study area description
+study.area.id     <- 1
+study.area.label  <- "Kenge"
+study.area.column <- "kenge"
+sample.size       <- 419
+hf.to.be.surveyed <- 15
+
 data.timestamp <- DataTimestamp(data.retrieval.mode, file.date, file.time)
 ```
 ---
@@ -32,3 +42,21 @@ date: `r data.timestamp`
 knitr::include_graphics("github_icon.png")
 ```
 [Dépôt GitHub du Rapport](https://github.com/maxramirez84/r_tiptop_exit_survey_data_quality_report)
+
+```{r setup, include=FALSE}
+# Retrieve Exit Survey data, filter it by study area and remove empty records
+data <- ReadData(data.retrieval.mode, file.prefix, file.content, file.date, 
+                 file.time, api.url, api.token, non.retrieved.variables)
+data <- data[data$district == study.area.id, ]
+data <- data[!is.na(data$record_id), ]
+
+last.record.date <- 'yyyy-mm-dd'# LastRecordDate(hhs_data)
+number.of.records <- 0 # numberOfRecords(hhs_data)
+```
+
+## PROGRÈS DE LA COLLECTE DE DONNÉES SUR TERRAIN
+
+La base de données contient `r number.of.records` enregistrements (dernier 
+enregistrement du `r last.record.date`).
+
+Collecte de données par [BEGIS](http://www.begis-congo.net).
