@@ -29,8 +29,8 @@ non.retrieved.variables <- c()
 study.area.id     <- 1
 study.area.label  <- "Kenge"
 study.area.column <- "kenge"
-sample.size       <- 419
-hf.to.be.surveyed <- 15
+sample.size       <- 142
+hf.to.be.surveyed <- 8
 
 data.timestamp <- DataTimestamp(data.retrieval.mode, file.date, file.time)
 ```
@@ -60,3 +60,21 @@ La base de données contient `r number.of.records` enregistrements (dernier
 enregistrement du `r last.record.date`).
 
 Collecte de données par [BEGIS](http://www.begis-congo.net).
+
+```{r recruited.women.area, echo=FALSE}
+consented <- NumberOfParticipantsWhoConsented(data)
+recruitment <- 0 # RecruitmentRate(data, sample.size)
+```
+
+### Progrès Géneral
+
+<div class="col-left text-center">
+  Femmes Interviewées @ `r study.area.label`
+
+  <span class="big-number">`r recruitment`%</span>
+
+  `r consented` / `r sample.size`
+</div>
+
+<div class="col-right text-center">
+</div>

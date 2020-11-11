@@ -100,3 +100,23 @@ NumberOfRecords <- function(data) {
   #   Int indicating how many records/interviews have been already done.
   return(nrow(data))
 }
+
+
+NumberOfParticipantsWhoConsented <- function(data) {
+  # Compute number of participants who consented the interview.
+  #
+  # Args:
+  #   data: Data frame containing the study data set.
+  #
+  # Returns:
+  #   Int indicating how many women signed the informed consent.
+  consent.table <- table(data$consent)
+  
+  if (length(consent.table) > 0){
+    consented <- consent.table[1] # consent = yes
+  } else {
+    consented <- 0
+  }
+  
+  return(consented)
+}
