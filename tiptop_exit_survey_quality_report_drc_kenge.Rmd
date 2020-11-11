@@ -86,3 +86,8 @@ recruitment <- RecruitmentRate(data, sample.size)
 
   `r consented` / `r sample.size`
 </div>
+
+```{r progress.area, echo=FALSE}
+ProgressOfArea(data, study.area.column, study.area.label, interval = 10, 
+               approaches.mean = 30, lang = language)
+```
