@@ -120,3 +120,25 @@ NumberOfParticipantsWhoConsented <- function(data) {
   
   return(consented)
 }
+
+
+RecruitmentRate <- function(data, sample.size) {
+  # Compute the recruitment rate.
+  #
+  # Args:
+  #   data: Data frame containing the study data set.
+  #   sample.size: Int indicating the expected number of women to be 
+  #                interviewed.
+  #
+  # Returns:
+  #   Double indicating the rate of recruitment
+  consented <- NumberOfParticipantsWhoConsented(data)
+  
+  if (is.na(consented)) {
+    recruitment.rate <- 0 
+  } else {
+    recruitment.rate <- floor((consented / sample.size) * 100)
+  } 
+    
+  return(recruitment.rate)
+}

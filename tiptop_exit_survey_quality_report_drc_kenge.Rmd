@@ -63,7 +63,7 @@ Collecte de données par [BEGIS](http://www.begis-congo.net).
 
 ```{r recruited.women.area, echo=FALSE}
 consented <- NumberOfParticipantsWhoConsented(data)
-recruitment <- 0 # RecruitmentRate(data, sample.size)
+recruitment <- RecruitmentRate(data, sample.size)
 ```
 
 ### Progrès Géneral
