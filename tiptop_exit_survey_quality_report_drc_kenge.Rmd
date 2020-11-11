@@ -1,13 +1,16 @@
 ---
-title: 'TIPTOP Enquête de Sortie de la CPN - Rapport de Qualité de Données: RDC - KENGE'
-author: "Máximo Ramírez Robles"
 output: 
   html_document: 
     css: style.css
 ---
 ```{r parameters, include=FALSE}
 source("tiptop_exit_survey_quality.R")
+source("lang.R")
 source("tokens.R")
+
+# Report language
+kReportLang <- "FR"
+language <- kLang[[kReportLang]]
 
 # Data retrieval: {api, file}
 data.retrieval.mode <- "api"
@@ -25,23 +28,31 @@ file.time    <- "15:42"
 # Varibles in dataset to be excluded and therefore not extracted
 non.retrieved.variables <- c()
 
+# Partner information
+partner.name <- "BEGIS"
+partner.url  <- "http://www.begis-congo.net"
+
 # Study area description
+country           <- "RDC"
 study.area.id     <- 1
 study.area.label  <- "Kenge"
 study.area.column <- "kenge"
 sample.size       <- 142
 hf.to.be.surveyed <- 8
 
+report.title <- paste(language$head.survey, '-', language$head.report, ':', country, '-', study.area.label)
 data.timestamp <- DataTimestamp(data.retrieval.mode, file.date, file.time)
 ```
 ---
-date: `r data.timestamp`
+title: "`r report.title`"
+author: "Máximo Ramírez Robles"
+date: "`r data.timestamp`"
 ---
 
 ```{r out.width="30px", echo=FALSE}
 knitr::include_graphics("github_icon.png")
 ```
-[Dépôt GitHub du Rapport](https://github.com/maxramirez84/r_tiptop_exit_survey_data_quality_report)
+[`r language$head.github`](https://github.com/maxramirez84/r_tiptop_exit_survey_data_quality_report)
 
 ```{r setup, include=FALSE}
 # Retrieve Exit Survey data, filter it by study area and remove empty records
@@ -54,27 +65,24 @@ last.record.date <- LastRecordDate(data)
 number.of.records <- NumberOfRecords(data)
 ```
 
-## PROGRÈS DE LA COLLECTE DE DONNÉES SUR TERRAIN
+## `r language$progress.title`
 
-La base de données contient `r number.of.records` enregistrements (dernier 
-enregistrement du `r last.record.date`).
+`r sprintf(language$progress.records, number.of.records)` 
+(`r sprintf(language$progress.last, last.record.date)`).
 
-Collecte de données par [BEGIS](http://www.begis-congo.net).
+`r language$progress.partner` [`r partner.name`](`r partner.url`).
 
 ```{r recruited.women.area, echo=FALSE}
 consented <- NumberOfParticipantsWhoConsented(data)
 recruitment <- RecruitmentRate(data, sample.size)
 ```
 
-### Progrès Géneral
+### `r language$progress.subtitle1`
 
 <div class="col-left text-center">
-  Femmes Interviewées @ `r study.area.label`
+  `r language$progress.women` @ `r study.area.label`
 
   <span class="big-number">`r recruitment`%</span>
 
   `r consented` / `r sample.size`
-</div>
-
-<div class="col-right text-center">
 </div>
