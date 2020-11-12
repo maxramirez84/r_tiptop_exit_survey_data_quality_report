@@ -20,7 +20,7 @@ kLang <- list(
     progress.plot.s2    = "Approchées",
     progress.plot.hf    = "CS%s",
     progress.no.data    = "Il n'y a pas des données",
-    profile.title       = "PROFIL DE L'ENQUÊTE",
+    profile.title       = "PROFIL DE L'ENQUÊTE À %s",
     profile.subtitle1   = "Profil de %s",
     profile.row2        = "# Femmes atteintes pour un entretien",
     profile.row3        = "# Femmes atteintes qui répondent aux critère 1",

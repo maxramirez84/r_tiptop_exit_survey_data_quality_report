@@ -94,7 +94,7 @@ ProgressOfArea(data, study.area.column, study.area.label, interval = 10,
                approaches.mean = 30, lang = language)
 ```
 
-## `r language$profile.title`
+## `r sprintf(language$profile.title, toupper(study.area.label))`
 
 ```{r survey.profile.area, echo=FALSE, results="asis"}
 # Print a profile table for each health facility
