@@ -520,3 +520,77 @@ DuplicatedWomen <- function(data, study.area.column, study.area.label, lang) {
     print(lang$dups.no.reuse)
   }
 }
+
+
+GetDuplicatedRecords <- function(data, study.area.column, study.area.label, lang) {
+  # Compute a data frame containing all the records that are duplicated, i.e.
+  # all variables are equal except record id.
+  #
+  # Args:
+  #   data: Data frame containing the study data set.
+  #   study.area.column: String indicating the column name in the data frame 
+  #                      storing the study area.
+  #   study.area.label: String containing the name of the study area.
+  #   lang: List of strings in the plot which are language-specific.
+  #
+  # Returns:
+  #   Data frame with records in which all variables are the equal.
+  column.facility <- paste0("facility_", study.area.column)
+  column.residence <- paste0("residence_", study.area.column)
+  
+  # All variables are the same except the record id
+  x <- duplicated(data[2:ncol(data)])
+  y <- duplicated(data[2:ncol(data)], fromLast = T)
+  dup.records <- data[x | y, ]
+  
+  columns <- c("record_id", "district", column.facility, "woman_id", "consent",
+               column.residence, "reported_age", "interviewer_id", 
+               "interview_date")
+  
+  dup.records.sum <- dup.records[order(dup.records[column.facility], 
+                                       dup.records$woman_id), columns]
+  
+  if (nrow(dup.records.sum) > 0) {
+    dup.records.sum$consent[is.na(dup.records.sum$consent)] <- lang$dups.label1
+    dup.records.sum$consent[dup.records.sum$consent == 0] <- lang$no
+    dup.records.sum$consent[dup.records.sum$consent == 1] <- lang$yes
+    
+    dup.records.sum$district <- study.area.label
+  }
+  
+  return(dup.records.sum)
+}
+
+
+DuplicatedRecords <- function(data, study.area.column, study.area.label, lang) {
+  # Create and print a Kable containing all the records that are duplicated, 
+  # i.e. all variables are equal except record id.
+  #
+  # Args:
+  #   data: Data frame containing the study data set.
+  #   study.area.column: String indicating the column name in the data frame 
+  #                      storing the study area.
+  #   study.area.label: String containing the name of the study area.
+  #   lang: List of strings in the plot which are language-specific.
+  #
+  # Returns:
+  #   None
+  dup.records.sum <- GetDuplicatedRecords(data, study.area.column, 
+                                          study.area.label, lang)
+  
+  if (nrow(dup.records.sum) > 0) {
+    colnames(dup.records.sum) <- c(
+      lang$dups.tab.header1, lang$dups.tab.header2, lang$dups.tab.header3, 
+      lang$dups.tab.header4, lang$dups.tab.header5, lang$dups.tab.header6,
+      lang$dups.tab.header7, lang$dups.tab.header8, lang$dups.tab.header9
+    )
+    
+    kable(dup.records.sum, "html", row.names = F, escape = F) %>%
+      kable_styling(bootstrap_options = c("striped", "hover", "responsive"), 
+                    font_size = 12) %>%
+      row_spec(0, bold = T, color = "white", background = "#494949") %>%
+      scroll_box(height = "250px")
+  } else {
+    print(lang$dups.no.records)
+  }
+}

@@ -114,3 +114,10 @@ for (hf in unique(data[[column]])) {
 ```{r duplicated.women, echo=FALSE}
 DuplicatedWomen(data, study.area.column, study.area.label, language)
 ```
+
+### `r language$dups.subtitle2`
+`r language$dups.desc2`
+
+```{r duplicated.records, echo=FALSE}
+DuplicatedRecords(data, study.area.column, study.area.label, language)
+```
