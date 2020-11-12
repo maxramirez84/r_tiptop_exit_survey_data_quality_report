@@ -101,7 +101,11 @@ ProgressOfArea(data, study.area.column, study.area.label, interval = 10,
 column <- paste0("facility_", study.area.column)
 for (hf in unique(data[[column]])) {
   hf.code <- sprintf(language$progress.plot.hf, hf)
-  print(h3(sprintf(language$profile.subtitle1, hf.code)))
+  subtitle <- h3(
+    img(src = "hf.png", width = "30px", style = "vertical-align: bottom;"),
+    sprintf(language$profile.subtitle1, hf.code)
+  )
+  print(subtitle)
   SurveyProfileOfHealthFacility(data, study.area.column, hf, language)
 }
 ```
