@@ -426,18 +426,20 @@ GetDuplicatedWomen <- function(data, study.area.column, study.area.label,
   column.residence <- paste0("residence_", study.area.column)
   
   # All variables are the same except record id
-  dup.records <- data[duplicated(data[2:ncol(data)]) | 
-                        duplicated(data[2:ncol(data)], fromLast = T), ]
+  x <- duplicated(data[2:ncol(data)])
+  y <- duplicated(data[2:ncol(data)], fromLast = T)
+  dup.records <- data[x | y, ]
   
   # ID variables are the same
   key.columns <- c(column.facility, "woman_id")
   id.columns <- data[key.columns]
-  dup.women <- data[duplicated(id.columns) | 
-                      duplicated(id.columns, fromLast = T), ]
+  x <- duplicated(id.columns)
+  y <- duplicated(id.columns, fromLast = T)
+  dup.women <- data[x | y, ]
   
   # Exclude from reused women IDs the duplicated records
-  reused.woman.ids <- dup.women[!(dup.women$record_id %in% 
-                                    dup.records$record_id), ]
+  x <- !(dup.women$record_id %in% dup.records$record_id)
+  reused.woman.ids <- dup.women[x, ]
   
   # Check if there is reused womam IDs which are also duplicated records
   reused.and.duplicated <- intersect(reused.woman.ids[key.columns], 
@@ -446,14 +448,12 @@ GetDuplicatedWomen <- function(data, study.area.column, study.area.label,
   if (nrow(reused.and.duplicated) > 0) {
     for (i in 1:nrow(reused.and.duplicated)) {
       if (!is.na(reused.and.duplicated[i, column.facility])) {
-        reused.woman.ids <- rbind(
-          reused.woman.ids, 
-          dup.records[
-            dup.records[column.facility] == 
-              reused.and.duplicated[i, column.facility] & 
-              dup.records$woman_id == reused.and.duplicated$woman_id[i], 
-          ][1,]
-        )
+        a <- dup.records[column.facility] == 
+          reused.and.duplicated[i, column.facility]
+        b <- dup.records$woman_id == reused.and.duplicated$woman_id[i]
+        x <- a & b
+          
+        reused.woman.ids <- rbind(reused.woman.ids, dup.records[x, ][1, ])
       }
     }
   }
