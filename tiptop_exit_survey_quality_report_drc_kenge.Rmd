@@ -99,7 +99,7 @@ ProgressOfArea(data, study.area.column, study.area.label, interval = 10,
 ```{r survey.profile.area, echo=FALSE, results="asis"}
 # Print a profile table for each health facility
 column <- paste0("facility_", study.area.column)
-for (hf in unique(data[[column]])) {
+for (hf in sort(unique(data[[column]]))) {
   hf.code <- sprintf(language$progress.plot.hf, hf)
   subtitle <- h3(
     img(src = "hf.png", width = "30px", style = "vertical-align: bottom;"),
