@@ -406,3 +406,117 @@ SurveyProfileOfHealthFacility <- function(data, study.area.column, facility,
           )
   )
 }
+
+
+GetDuplicatedWomen <- function(data, study.area.column, study.area.label, 
+                               lang) {
+  # Compute a data frame containing all the records that are duplicated on the
+  # woman ID variable.
+  #
+  # Args:
+  #   data: Data frame containing the study data set.
+  #   study.area.column: String indicating the column name in the data frame 
+  #                      storing the study area.
+  #   study.area.label: String containing the name of the study area.
+  #   lang: List of strings in the plot which are language-specific.
+  #
+  # Returns:
+  #   Data frame with records in which woman ID is being reused.
+  column.facility <- paste0("facility_", study.area.column)
+  column.residence <- paste0("residence_", study.area.column)
+  
+  # All variables are the same except record id
+  dup.records <- data[duplicated(data[2:ncol(data)]) | 
+                        duplicated(data[2:ncol(data)], fromLast = T), ]
+  
+  # ID variables are the same
+  key.columns <- c(column.facility, "woman_id")
+  id.columns <- data[key.columns]
+  dup.women <- data[duplicated(id.columns) | 
+                      duplicated(id.columns, fromLast = T), ]
+  
+  # Exclude from reused women IDs the duplicated records
+  reused.woman.ids <- dup.women[!(dup.women$record_id %in% 
+                                    dup.records$record_id), ]
+  
+  # Check if there is reused womam IDs which are also duplicated records
+  reused.and.duplicated <- intersect(reused.woman.ids[key.columns], 
+                                     dup.records[key.columns])
+  
+  if (nrow(reused.and.duplicated) > 0) {
+    for (i in 1:nrow(reused.and.duplicated)) {
+      if (!is.na(reused.and.duplicated[i, column.facility])) {
+        reused.woman.ids <- rbind(
+          reused.woman.ids, 
+          dup.records[
+            dup.records[column.facility] == 
+              reused.and.duplicated[i, column.facility] & 
+              dup.records$woman_id == reused.and.duplicated$woman_id[i], 
+          ][1,]
+        )
+      }
+    }
+  }
+  
+  if (nrow(reused.woman.ids) == 0) {
+    return(NULL)
+  }
+  
+  columns <- c("record_id", "district", column.facility, "woman_id", "consent",
+               column.residence, "reported_age", "interviewer_id", 
+               "interview_date")
+  reused.woman.ids.sum <- reused.woman.ids[
+    order(reused.woman.ids[column.facility], reused.woman.ids$woman_id, 
+          reused.woman.ids$interview_date), columns]
+  
+  # Remove deleted records
+  reused.woman.ids.sum <- 
+    reused.woman.ids.sum[!is.na(reused.woman.ids.sum$district), ]
+  
+  # Place labels
+  reused.woman.ids.sum$consent[is.na(reused.woman.ids.sum$consent)] <- 
+    lang$dups.label1
+  reused.woman.ids.sum$consent[reused.woman.ids.sum$consent == 0] <- lang$no
+  reused.woman.ids.sum$consent[reused.woman.ids.sum$consent == 1] <- lang$yes
+  
+  reused.woman.ids.sum$district <- study.area.label
+  
+  return(reused.woman.ids.sum)
+}
+
+DuplicatedWomen <- function(data, study.area.column, study.area.label, lang) {
+  # Create and print a Kable containing all the records that are duplicated on the
+  # woman ID variable.
+  #
+  # Args:
+  #   data: Data frame containing the study data set.
+  #   study.area.column: String indicating the column name in the data frame 
+  #                      storing the study area.
+  #   study.area.label: String containing the name of the study area.
+  #   lang: List of strings in the plot which are language-specific.
+  #
+  # Returns:
+  #   None
+  reused.women.ids.sum <- GetDuplicatedWomen(data, study.area.column,
+                                             study.area.label, lang)
+  
+  if (!is.null(reused.women.ids.sum)) {
+    if (nrow(reused.women.ids.sum) > 0) {
+      colnames(reused.women.ids.sum) <- c(
+        lang$dups.tab.header1, lang$dups.tab.header2, lang$dups.tab.header3, 
+        lang$dups.tab.header4, lang$dups.tab.header5, lang$dups.tab.header6,
+        lang$dups.tab.header7, lang$dups.tab.header8, lang$dups.tab.header9
+      )
+      
+      kable(reused.women.ids.sum, "html", row.names = F, escape = F) %>%
+        kable_styling(bootstrap_options = c("striped", "hover", "responsive"), 
+                      font_size = 12) %>%
+        row_spec(0, bold = T, color = "white", background = "#494949") %>%
+        scroll_box(height = "250px")
+    } else {
+      print(lang$dups.no.reuse)
+    }
+  } else {
+    print(lang$dups.no.reuse)
+  }
+}

@@ -105,3 +105,12 @@ for (hf in unique(data[[column]])) {
   SurveyProfileOfHealthFacility(data, study.area.column, hf, language)
 }
 ```
+
+## `r language$dups.title`
+
+### `r language$dups.subtitle1`
+`r language$dups.desc1`
+
+```{r duplicated.women, echo=FALSE}
+DuplicatedWomen(data, study.area.column, study.area.label, language)
+```

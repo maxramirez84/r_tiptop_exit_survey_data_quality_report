@@ -4,6 +4,8 @@ kLang <- list(
     head.report         = "Data Quality Report"
   ),
   FR = list(
+    yes                 = "Oui",
+    no                  = "Non",
     head.survey         = "TIPTOP Enquête de Sortie de la CPN",
     head.report         = "Rapport de Qualité de Données",
     head.github         = "Dépôt GitHub du Rapport",
@@ -40,6 +42,20 @@ kLang <- list(
     profile.notes.desc  = "Les cellules colorées sont des erreurs de cohérence. Survolez ces cellules pour afficher une info-bulle avec le message d'erreur. Veuillez vous référer à la feuille de requêtes de données fournie",
     profile.note1       = "Femme éligible: femme qui répond aux critères de sélection 1 et aux critères de sélection 2",
     profile.note2       = "Critères de sélection 1: Femmes enceintes à la sortie d'une visite de soins prénatals",
-    profile.note3       = "Critères de sélection 2: Vivre dans les districts où TIPTOP est mis en œuvre, au moins pour une période de 6 mois avant l'entretien"
+    profile.note3       = "Critères de sélection 2: Vivre dans les districts où TIPTOP est mis en œuvre, au moins pour une période de 6 mois avant l'entretien",
+    dups.title          = "Doublons",
+    dups.subtitle1      = "Femmes en double",
+    dups.desc1          = "Même identifiant de femme utilisé plus d'une fois pour différentes interviews",
+    dups.label1         = "Pas demandé",
+    dups.no.reuse       = "Il n'y a pas de femmes en double",
+    dups.tab.header1    = "ID", 
+    dups.tab.header2    = "District", 
+    dups.tab.header3    = "CS", 
+    dups.tab.header4    = "ID Femme", 
+    dups.tab.header5    = "Cons.", 
+    dups.tab.header6    = "Résidence", 
+    dups.tab.header7    = "Age",
+    dups.tab.header8    = "ID Enq.", 
+    dups.tab.header9    = "Date Enq."
   )
 )
