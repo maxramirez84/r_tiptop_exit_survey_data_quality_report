@@ -1,4 +1,5 @@
 library(redcapAPI)
+library(kableExtra)
 
 kColorPalette <- c("gray8", "gray35", "gray90")
 
@@ -217,4 +218,191 @@ ProgressOfArea <- function(data, study.area.column, study.area.label, interval,
   } else {
     print(lang$progress.no.data) 
   }
+}
+
+
+SurveyProfileOfHealthFacility <- function(data, study.area.column, facility, 
+                                          lang) {
+  # Produce and print a Kable with the survey profile of a concrete health 
+  # facility in which inconsistencies are identified and displyed in red with a 
+  # tooltip describing the problem.
+  #
+  # Args:
+  #   data: Data frame containing the study data set.
+  #   study.area.column: String indicating the column name in the data frame 
+  #                      storing the study area.
+  #   facility: String indicating the health facility.
+  #   lang: List of strings in the plot which are language-specific.
+  #
+  # Returns:
+  #   None
+  kMaxNumberColumns <- 29
+  kFontSize <- 10
+  
+  column <- paste0("facility_", study.area.column)
+  hf.data <- data[which(data[column] == facility), ]
+  hf.data$interview_only_date <- as.Date(hf.data$interview_date, "%Y-%m-%d")
+  
+  # Row two of survey profile - Women reached for an interview
+  reached.women.per.day <- table(hf.data$interview_only_date)
+  
+  # Row three of survey profile - Women reached that meet criteria 1, where
+  # criteria 1 is pregnant women when leaving an antenatal care visit
+  reached.pregnant.women.per.day <- table(hf.data[
+    which(hf.data$pregnant_woman == 1 & hf.data$anc_visit == 1), 
+    'interview_only_date'
+  ])
+  
+  # Row four of survey profile - Women reached that meet criteria 2, where
+  # criteria 2 is living in the districts were TIPTOP is being implemented, for
+  # a period of 6 months before the interview (at least)
+  reached.resident.women.per.day <- table(hf.data[
+    which(hf.data$resident_during_pregnancy == 1), 
+    'interview_only_date'
+  ])
+  
+  # Row five of survey profile - Eligible women (that meet criteria 1 and 2)
+  # selected for an interview
+  eligible.women <- table(hf.data[
+    which(hf.data$pregnant_woman == 1 & hf.data$anc_visit == 1 & 
+            hf.data$resident_during_pregnancy == 1), 
+    'interview_only_date'
+  ])
+  
+  # Row six of survey profile - Women that sign the informed consent 
+  # (women interviewed)
+  interviewed.women <- table(hf.data[
+    which(hf.data$consent == 1), 
+    'interview_only_date'
+  ])
+  
+  # Row seven of survey profile - Women that do not sign the informed consent
+  # (women NON interviewed)
+  non.interviewed.women <- table(hf.data[
+    which(hf.data$consent == 0), 
+    'interview_only_date'
+  ])
+  
+  # Row eight of survey profile - Women that refused to participate in the study
+  women.who.refused <- table(hf.data[
+    which(hf.data$why_not_consent == 0), 
+    'interview_only_date'
+  ])
+  
+  # Row nine of survey profile - Women that are not able to respond
+  women.not.able <- table(hf.data[
+    which(hf.data$why_not_consent == 1), 
+    'interview_only_date'
+  ])
+  
+  # TODO(maxramirez84): Include row in the profile and number it here 
+  #                     accrodingly
+  # Row ?? (not in current version) of survey profile - Women that are not 
+  # available taking into account the time required to complete the interview
+  women.not.available <- table(hf.data[
+    which(hf.data$why_not_consent == 2), 
+    'interview_only_date'
+  ])
+  
+  # Row 10 of survey profile - Women that do not sign IC due to other reason
+  women.non.ic.other <- table(hf.data[
+    which(hf.data$why_not_consent == 88), 
+    'interview_only_date'
+  ])
+  
+  # Row 11 of survey profile - Women that sign the informed consent but 
+  # interrupt the interview at some point later on
+  women.interrupt <- table(hf.data[
+    # sp_community_doses is the last question of the interview (q30)
+    which(hf.data$consent == 1 & is.na(hf.data$sp_community_doses)),
+    'interview_only_date'
+  ])
+  
+  # Row 12 of survey profile - Interviewed women that had and episode of malaria
+  # during their current pregnancy
+  interviewed.mip <- table(hf.data[
+    which(hf.data$consent == 1 & hf.data$mip %in% c(1, 2)),
+    'interview_only_date'
+  ])
+  
+  # Row 13 of survey profile - Interviewed women suffering an episode of malaria
+  # (in current pregnancy) that requires hospitalization
+  interviewed.mip.hosp <- table(hf.data[
+    which(hf.data$consent == 1 & hf.data$mip_hosp == 1),
+    'interview_only_date'
+  ])
+  
+  profile <- Union(
+    # Row 1 not available from REDCap data = Number of women visited at ANC                              
+    reached.women.per.day,          # Row 2 = Women reached for an interview
+    reached.pregnant.women.per.day, # Row 3 = Women reached that meet criteria 1
+    reached.resident.women.per.day, # Row 4 = Women reached that meet criteria 2
+    eligible.women,                 # Row 5 = Eligible women (meet all criteria)
+    interviewed.women,              # Row 6 = Women that sign IC - interviewed
+    non.interviewed.women,          # Row 7 = Women that don't sign IC
+    women.who.refused,              # Row 8 = Women that refused to participate
+    women.not.able,                 # Row 9 = Women that aren't able to respond
+    # TODO(maxramirez84): Include row in the profile and number it here 
+    #                     accrodingly
+    women.not.available,            # Row ? = Women that aren't available
+    women.non.ic.other,             # Row 10 = Women that don't sign (others)
+    women.interrupt,                # Row 11 = Women that interrupt interview
+    interviewed.mip,                # Row 12 = Women that had mip
+    interviewed.mip.hosp            # Row 13 = Women that had complicated mip
+  )
+  row.names(profile) <- c(
+    lang$profile.row2, 
+    paste0(lang$profile.row3, footnote_marker_symbol(1, "html")), 
+    paste0(lang$profile.row4, footnote_marker_symbol(2, "html")),
+    paste0(lang$profile.row5, footnote_marker_symbol(3, "html")),
+    lang$profile.row6, 
+    lang$profile.row7,
+    lang$profile.row8, 
+    lang$profile.row9,
+    lang$profile.rowX, 
+    lang$profile.row10,
+    lang$profile.row11, 
+    lang$profile.row12,
+    lang$profile.row13
+  )
+  profile$total <- rowSums(profile)
+  
+  # Consistency checks
+  profile.checked <- profile
+  for (i in colnames(profile)) {
+    # Check 1: non.interviewed.women = women.who.refused + women.not.able + 
+    #                                  women.not.available + women.non.ic.other
+    check1 <- profile[7, i] + profile[8, i] + profile[9, i] + 
+      profile[10, i] != profile[6, i]
+    
+    profile.checked[c(6, 7, 8, 9, 10), i] = cell_spec(
+      x        = profile[c(6, 7, 8, 9, 10), i],
+      format   = "html",
+      color    = ifelse(check1, "red", ""),
+      tooltip  = ifelse(check1, lang$profile.check1, "")
+    )
+    
+    # TODO(maxramirez84): Identify and implement more checks in the profile
+  }
+  
+  # TODO(maxramirez84): Check if profile has more columns than kMaxNumberColumns
+  #                     and create one or more kables accordingly
+  
+  print(kable(profile.checked, "html", escape = F) %>% 
+          kable_styling(bootstrap_options = c("striped", "hover", "responsive"), 
+                        font_size = kFontSize) %>%
+          row_spec(0, bold = T, color = "white", background = "#494949") %>%
+          row_spec(c(1, 4, 5), bold = T) %>%
+          add_indent(c(5, 6, 11, 12, 13), level_of_indent = 1) %>% 
+          add_indent(c(7, 8, 9, 10), level_of_indent = 2) %>%
+          footnote(
+            general_title = paste0(lang$profile.notes.title, ":"),
+            general       = lang$profile.notes.desc,
+            symbol        = c(
+              lang$profile.note2, 
+              lang$profile.note3,
+              lang$profile.note1
+            )
+          )
+  )
 }

@@ -4,6 +4,8 @@ output:
     css: style.css
 ---
 ```{r parameters, include=FALSE}
+library(htmltools)
+
 source("tiptop_exit_survey_quality.R")
 source("lang.R")
 source("tokens.R")
@@ -90,4 +92,16 @@ recruitment <- RecruitmentRate(data, sample.size)
 ```{r progress.area, echo=FALSE}
 ProgressOfArea(data, study.area.column, study.area.label, interval = 10, 
                approaches.mean = 30, lang = language)
+```
+
+## `r language$profile.title`
+
+```{r survey.profile.area, echo=FALSE, results="asis"}
+# Print a profile table for each health facility
+column <- paste0("facility_", study.area.column)
+for (hf in unique(data[[column]])) {
+  hf.code <- sprintf(language$progress.plot.hf, hf)
+  print(h3(sprintf(language$profile.subtitle1, hf.code)))
+  SurveyProfileOfHealthFacility(data, study.area.column, hf, language)
+}
 ```

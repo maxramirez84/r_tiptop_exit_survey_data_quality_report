@@ -19,6 +19,27 @@ kLang <- list(
     progress.plot.s1    = "Interviewées",
     progress.plot.s2    = "Approchées",
     progress.plot.hf    = "CS%s",
-    progress.no.data    = "Il n'y a pas des données"
+    progress.no.data    = "Il n'y a pas des données",
+    profile.title       = "PROFIL DE L'ENQUÊTE",
+    profile.subtitle1   = "Profil de %s",
+    profile.row2        = "# Femmes atteintes pour un entretien",
+    profile.row3        = "# Femmes atteintes qui répondent aux critère 1",
+    profile.row4        = "# Femmes atteintes qui répondent aux critère 2",
+    profile.row5        = "# Femmes éligibles (qui répondent aux critères 1 et 2) contactées pour un entretien",
+    profile.row6        = "# Femmes éligibles qui signent le consentement éclairé",
+    profile.row7        = "# Femmes qui ne signent pas le consentement éclairé (NON interviewées)",
+    profile.row8        = "Refus de participer à l'étude",
+    profile.row9        = "Pas en mesure de répondre",
+    profile.rowX        = "Pas être disponible",
+    profile.row10       = "Autre raison",
+    profile.row11       = "# Femmes qui signent le consentement éclairé mais qui ont interrompu l'entretien",
+    profile.row12       = "# Femmes ayant eu un épisode de paludisme pendant leur grossesse actuelle",
+    profile.row13       = "# Femmes ayant eu un épisode qui a nécessité une hospitalisation",
+    profile.check1      = "Le nombre de femmes NON interviewées doit être égal à la somme de femmes qui refusent + ne sont pas en mesure de répondre + ne sont pas disponible + autre raison",
+    profile.notes.title = "Remarques",
+    profile.notes.desc  = "Les cellules colorées sont des erreurs de cohérence. Survolez ces cellules pour afficher une info-bulle avec le message d'erreur. Veuillez vous référer à la feuille de requêtes de données fournie",
+    profile.note1       = "Femme éligible: femme qui répond aux critères de sélection 1 et aux critères de sélection 2",
+    profile.note2       = "Critères de sélection 1: Femmes enceintes à la sortie d'une visite de soins prénatals",
+    profile.note3       = "Critères de sélection 2: Vivre dans les districts où TIPTOP est mis en œuvre, au moins pour une période de 6 mois avant l'entretien"
   )
 )
