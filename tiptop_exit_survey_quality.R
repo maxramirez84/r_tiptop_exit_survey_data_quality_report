@@ -431,7 +431,7 @@ GetDuplicatedWomen <- function(data, study.area.column, study.area.label,
   dup.records <- data[x | y, ]
   
   # ID variables are the same
-  key.columns <- c(column.facility, "woman_id")
+  key.columns <- c(column.facility, "woman_id", "interviewer_id")
   id.columns <- data[key.columns]
   x <- duplicated(id.columns)
   y <- duplicated(id.columns, fromLast = T)
@@ -467,7 +467,8 @@ GetDuplicatedWomen <- function(data, study.area.column, study.area.label,
                "interview_date")
   reused.woman.ids.sum <- reused.woman.ids[
     order(reused.woman.ids[column.facility], reused.woman.ids$woman_id, 
-          reused.woman.ids$interview_date), columns]
+          reused.woman.ids$interviewer_id, reused.woman.ids$interview_date), 
+    columns]
   
   # Remove deleted records
   reused.woman.ids.sum <- 
