@@ -630,12 +630,13 @@ HospitalizedMiPRate <- function(data) {
   #   Int indicating percentage of hospitalized MiP
   consented <- NumberOfParticipantsWhoConsented(data)
   
+  mip <- table(data$mip)
   mip.hosp <- table(data$mip_hosp)
   
   if (is.na(mip.hosp[2])) {
     mip.hosp.rate <- 0 
   } else { 
-    mip.hosp.rate <- floor(mip.hosp[2] / consented * 100)
+    mip.hosp.rate <- floor(mip.hosp[2] / mip[2] * 100)
   }
   
   return(mip.hosp.rate)

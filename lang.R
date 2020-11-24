@@ -65,6 +65,6 @@ kLang <- list(
     indicators.desc      = "Ces indicateurs sont calculés à partir de données brutes. Par conséquent, les données n'ont passé aucun processus de vérification et / ou de nettoyage. Ils ne doivent pas être utilisés à des fins d'analyse. Ils sont présentés pour résoudre tout problème éventuel de données.",
     indicators.subtitle1 = "Indicateurs du Paludisme pendant la Grossesse (PpG)",
     indicators.header1   = "Femmes ayant PpG",
-    indicators.header2   = "Hospitalisées en raison du PpG"
+    indicators.header2   = "(Parmi elles) Hospitalisées du PpG"
   )
 )
