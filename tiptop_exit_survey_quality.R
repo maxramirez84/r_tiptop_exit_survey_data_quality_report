@@ -595,3 +595,48 @@ DuplicatedRecords <- function(data, study.area.column, study.area.label, lang) {
     print(lang$dups.no.records)
   }
 }
+
+
+MiPRate <- function(data) {
+  # Compute the percentage of women having malaria in pregnancy.
+  #
+  # Args:
+  #   data: Data frame containing the study data set.
+  #
+  # Returns:
+  #   Int indicating percentage of MiP
+  consented <- NumberOfParticipantsWhoConsented(data)
+  
+  mip <- table(data$mip)
+  
+  if (is.na(mip[2])) {
+    mip.rate <- 0 
+  } else { 
+    mip.rate <- floor(mip[2] / consented * 100)
+  }
+  
+  return(mip.rate)
+}
+
+
+HospitalizedMiPRate <- function(data) {
+  # Compute the percentage of women having malaria in pregnancy and who got
+  # hospitalized due to it.
+  #
+  # Args:
+  #   data: Data frame containing the study data set.
+  #
+  # Returns:
+  #   Int indicating percentage of hospitalized MiP
+  consented <- NumberOfParticipantsWhoConsented(data)
+  
+  mip.hosp <- table(data$mip_hosp)
+  
+  if (is.na(mip.hosp[2])) {
+    mip.hosp.rate <- 0 
+  } else { 
+    mip.hosp.rate <- floor(mip.hosp[2] / consented * 100)
+  }
+  
+  return(mip.hosp.rate)
+}

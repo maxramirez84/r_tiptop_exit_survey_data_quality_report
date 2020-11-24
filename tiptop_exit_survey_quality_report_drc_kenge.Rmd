@@ -125,3 +125,31 @@ DuplicatedWomen(data, study.area.column, study.area.label, language)
 ```{r duplicated.records, echo=FALSE}
 DuplicatedRecords(data, study.area.column, study.area.label, language)
 ```
+
+## `r language$indicators.title`
+
+<span style="color: red"><b>`r language$indicators.impt`:</b></span>
+`r language$indicators.desc`
+
+### `r language$indicators.subtitle1`
+
+<div class="col-container">
+```{r mip.indicators, echo=FALSE}
+mip.rate <- MiPRate(data)
+mip.hosp.rate <- HospitalizedMiPRate(data)
+```
+
+<div class="col-left text-center">
+  <div class="col-container">
+  <div class="col-left col-bottom text-right vertical-small-padding text-color-medium-value">
+  <span class="medium-number">`r mip.rate`%</span><br/>
+  `r language$indicators.header1`
+  </div>
+  <div class="col-right text-left vertical-small-padding text-color-big-value">
+  <span class="big-number">`r mip.hosp.rate`%</span><br/>
+  `r language$indicators.header2`
+  </div>
+  </div>
+</div>
+<br/>
+------
