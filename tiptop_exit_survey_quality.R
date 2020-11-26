@@ -411,7 +411,8 @@ SurveyProfileOfHealthFacility <- function(data, study.area.column, facility,
 GetDuplicatedWomen <- function(data, study.area.column, study.area.label, 
                                lang) {
   # Compute a data frame containing all the records that are duplicated on the
-  # woman ID variable.
+  # woman ID variable, considering that IDs are unique by interviewer and
+  # day.
   #
   # Args:
   #   data: Data frame containing the study data set.
@@ -421,7 +422,10 @@ GetDuplicatedWomen <- function(data, study.area.column, study.area.label,
   #   lang: List of strings in the plot which are language-specific.
   #
   # Returns:
-  #   Data frame with records in which woman ID is being reused.
+  #   Data frame with records in which woman ID is being reused by the same
+  #   interviewer and day.
+  data$interview_only_date <- as.Date(data$interview_date, "%Y-%m-%d")
+  
   column.facility <- paste0("facility_", study.area.column)
   column.residence <- paste0("residence_", study.area.column)
   
@@ -431,7 +435,8 @@ GetDuplicatedWomen <- function(data, study.area.column, study.area.label,
   dup.records <- data[x | y, ]
   
   # ID variables are the same
-  key.columns <- c(column.facility, "woman_id", "interviewer_id")
+  key.columns <- c(column.facility, "woman_id", "interviewer_id", 
+                   "interview_only_date")
   id.columns <- data[key.columns]
   x <- duplicated(id.columns)
   y <- duplicated(id.columns, fromLast = T)
@@ -486,8 +491,9 @@ GetDuplicatedWomen <- function(data, study.area.column, study.area.label,
 }
 
 DuplicatedWomen <- function(data, study.area.column, study.area.label, lang) {
-  # Create and print a Kable containing all the records that are duplicated on the
-  # woman ID variable.
+  # Create and print a Kable containing all the records that are duplicated on 
+  # the woman ID variable, considering that IDs are unique by interviewer and
+  # day.
   #
   # Args:
   #   data: Data frame containing the study data set.
