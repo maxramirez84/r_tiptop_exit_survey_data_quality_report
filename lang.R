@@ -37,6 +37,7 @@ kLang <- list(
     profile.row11        = "# Femmes qui signent le consentement éclairé mais qui ont interrompu l'entretien",
     profile.row12        = "# Femmes ayant eu un épisode de paludisme pendant leur grossesse actuelle",
     profile.row13        = "# Femmes ayant eu un épisode qui a nécessité une hospitalisation",
+    profile.row14        = "# Travailleurs de la santé interviewés",
     profile.check1       = "Le nombre de femmes NON interviewées doit être égal à la somme de femmes qui refusent + ne sont pas en mesure de répondre + ne sont pas disponible + autre raison",
     profile.notes.title  = "Remarques",
     profile.notes.desc   = "Les cellules colorées sont des erreurs de cohérence. Survolez ces cellules pour afficher une info-bulle avec le message d'erreur. Veuillez vous référer à la feuille de requêtes de données fournie",

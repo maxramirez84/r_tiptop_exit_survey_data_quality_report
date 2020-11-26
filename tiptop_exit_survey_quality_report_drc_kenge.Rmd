@@ -19,7 +19,10 @@ data.retrieval.mode <- "api"
 
 # API
 api.url   <- kREDCapAPIURL
-api.token <- kAPITokenDRC # TIPTOP Cost-Effectiveness Exit Survey DRC
+# TIPTOP Cost-Effectiveness Exit Survey DRC
+api.token.exit.survey <- kAPITokenDRCES
+# TIPTOP Cost-Effectiveness Health System DRC
+api.token.health.systems <- kAPITokenDRCHS 
 
 # File
 file.prefix  <- "DATA/DATA_WITH_NO_DUPS/XXX"
@@ -58,13 +61,24 @@ knitr::include_graphics("github_icon.png")
 
 ```{r setup, include=FALSE}
 # Retrieve Exit Survey data, filter it by study area and remove empty records
-data <- ReadData(data.retrieval.mode, file.prefix, file.content, file.date, 
-                 file.time, api.url, api.token, non.retrieved.variables)
-data <- data[data$district == study.area.id, ]
-data <- data[!is.na(data$record_id), ]
+exit.survey.data <- ReadData(data.retrieval.mode, file.prefix, file.content, 
+                             file.date, file.time, api.url, 
+                             api.token.exit.survey, non.retrieved.variables)
+exit.survey.data <- exit.survey.data[exit.survey.data$district == 
+                                       study.area.id, ]
+exit.survey.data <- exit.survey.data[!is.na(exit.survey.data$record_id), ]
 
-last.record.date <- LastRecordDate(data)
-number.of.records <- NumberOfRecords(data)
+# Retrive Health System data, filter it by study area and remove empty records
+health.system.data <- ReadData(data.retrieval.mode, file.prefix, file.content, 
+                               file.date, file.time, api.url, 
+                               api.token.health.systems, 
+                               non.retrieved.variables)
+health.system.data <- health.system.data[health.system.data$district == 
+                                           study.area.id, ]
+health.system.data <- health.system.data[!is.na(health.system.data$record_id), ]
+
+last.record.date <- LastRecordDate(exit.survey.data)
+number.of.records <- NumberOfRecords(exit.survey.data)
 ```
 
 ## `r language$progress.title`
@@ -75,8 +89,8 @@ number.of.records <- NumberOfRecords(data)
 `r language$progress.partner` [`r partner.name`](`r partner.url`).
 
 ```{r recruited.women.area, echo=FALSE}
-consented <- NumberOfParticipantsWhoConsented(data)
-recruitment <- RecruitmentRate(data, sample.size)
+consented <- NumberOfParticipantsWhoConsented(exit.survey.data)
+recruitment <- RecruitmentRate(exit.survey.data, sample.size)
 ```
 
 ### `r language$progress.subtitle1`
@@ -90,8 +104,8 @@ recruitment <- RecruitmentRate(data, sample.size)
 </div>
 
 ```{r progress.area, echo=FALSE}
-ProgressOfArea(data, study.area.column, study.area.label, interval = 10, 
-               approaches.mean = 30, lang = language)
+ProgressOfArea(exit.survey.data, study.area.column, study.area.label, 
+               interval = 10, approaches.mean = 30, lang = language)
 ```
 
 ## `r sprintf(language$profile.title, toupper(study.area.label))`
@@ -99,14 +113,15 @@ ProgressOfArea(data, study.area.column, study.area.label, interval = 10,
 ```{r survey.profile.area, echo=FALSE, results="asis"}
 # Print a profile table for each health facility
 column <- paste0("facility_", study.area.column)
-for (hf in sort(unique(data[[column]]))) {
+for (hf in sort(unique(exit.survey.data[[column]]))) {
   hf.code <- sprintf(language$progress.plot.hf, hf)
   subtitle <- h3(
     img(src = "hf.png", width = "30px", style = "vertical-align: bottom;"),
     sprintf(language$profile.subtitle1, hf.code)
   )
   print(subtitle)
-  SurveyProfileOfHealthFacility(data, study.area.column, hf, language)
+  SurveyProfileOfHealthFacility(exit.survey.data, health.system.data, 
+                                study.area.column, hf, language)
 }
 ```
 
@@ -116,14 +131,15 @@ for (hf in sort(unique(data[[column]]))) {
 `r language$dups.desc1`
 
 ```{r duplicated.women, echo=FALSE}
-DuplicatedWomen(data, study.area.column, study.area.label, language)
+DuplicatedWomen(exit.survey.data, study.area.column, study.area.label, language)
 ```
 
 ### `r language$dups.subtitle2`
 `r language$dups.desc2`
 
 ```{r duplicated.records, echo=FALSE}
-DuplicatedRecords(data, study.area.column, study.area.label, language)
+DuplicatedRecords(exit.survey.data, study.area.column, study.area.label, 
+                  language)
 ```
 
 ## `r language$indicators.title`
@@ -135,8 +151,8 @@ DuplicatedRecords(data, study.area.column, study.area.label, language)
 
 <div class="col-container">
 ```{r mip.indicators, echo=FALSE}
-mip.rate <- MiPRate(data)
-mip.hosp.rate <- HospitalizedMiPRate(data)
+mip.rate <- MiPRate(exit.survey.data)
+mip.hosp.rate <- HospitalizedMiPRate(exit.survey.data)
 ```
 
 <div class="col-left text-center">

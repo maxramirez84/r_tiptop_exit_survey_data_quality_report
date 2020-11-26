@@ -165,6 +165,7 @@ Union <- function(...) {
         dat[i, j] <- aux[[i]][j] 
     }
   }
+  dat <- dat[, order(names(dat))]
   dat <- rapply(dat, f = function(x) ifelse(is.na(x), 0, x), how = "replace")
   return(dat)
 }
@@ -221,14 +222,15 @@ ProgressOfArea <- function(data, study.area.column, study.area.label, interval,
 }
 
 
-SurveyProfileOfHealthFacility <- function(data, study.area.column, facility, 
-                                          lang) {
+SurveyProfileOfHealthFacility <- function(exit.survey.data, health.system.data,
+                                          study.area.column, facility, lang) {
   # Produce and print a Kable with the survey profile of a concrete health 
   # facility in which inconsistencies are identified and displyed in red with a 
   # tooltip describing the problem.
   #
   # Args:
-  #   data: Data frame containing the study data set.
+  #   exit.survey.data: Data frame containing the exit survey data set.
+  #   health.system.data: Data frame containing the health system data set.
   #   study.area.column: String indicating the column name in the data frame 
   #                      storing the study area.
   #   facility: String indicating the health facility.
@@ -240,8 +242,11 @@ SurveyProfileOfHealthFacility <- function(data, study.area.column, facility,
   kFontSize <- 10
   
   column <- paste0("facility_", study.area.column)
-  hf.data <- data[which(data[column] == facility), ]
+  hf.data <- exit.survey.data[which(exit.survey.data[column] == facility), ]
   hf.data$interview_only_date <- as.Date(hf.data$interview_date, "%Y-%m-%d")
+  
+  hs.data <- health.system.data[which(health.system.data[column] == facility), ]
+  hs.data$interview_only_date <- as.Date(hs.data$interview_date, "%Y-%m-%d")
   
   # Row two of survey profile - Women reached for an interview
   reached.women.per.day <- table(hf.data$interview_only_date)
@@ -332,6 +337,9 @@ SurveyProfileOfHealthFacility <- function(data, study.area.column, facility,
     'interview_only_date'
   ])
   
+  # Row 14 of survey profile - Interviewed health workers
+  interviewed.hw <- table(hs.data$interview_only_date)
+  
   profile <- Union(
     # Row 1 not available from REDCap data = Number of women visited at ANC                              
     reached.women.per.day,          # Row 2 = Women reached for an interview
@@ -348,7 +356,8 @@ SurveyProfileOfHealthFacility <- function(data, study.area.column, facility,
     women.non.ic.other,             # Row 10 = Women that don't sign (others)
     women.interrupt,                # Row 11 = Women that interrupt interview
     interviewed.mip,                # Row 12 = Women that had mip
-    interviewed.mip.hosp            # Row 13 = Women that had complicated mip
+    interviewed.mip.hosp,           # Row 13 = Women that had complicated mip
+    interviewed.hw                  # Row 14 = Interviewed health workers
   )
   row.names(profile) <- c(
     lang$profile.row2, 
@@ -363,7 +372,8 @@ SurveyProfileOfHealthFacility <- function(data, study.area.column, facility,
     lang$profile.row10,
     lang$profile.row11, 
     lang$profile.row12,
-    lang$profile.row13
+    lang$profile.row13,
+    lang$profile.row14
   )
   profile$total <- rowSums(profile)
   
@@ -392,7 +402,7 @@ SurveyProfileOfHealthFacility <- function(data, study.area.column, facility,
           kable_styling(bootstrap_options = c("striped", "hover", "responsive"), 
                         font_size = kFontSize) %>%
           row_spec(0, bold = T, color = "white", background = "#494949") %>%
-          row_spec(c(1, 4, 5), bold = T) %>%
+          row_spec(c(1, 4, 5, 14), bold = T) %>%
           add_indent(c(5, 6, 11, 12, 13), level_of_indent = 1) %>% 
           add_indent(c(7, 8, 9, 10), level_of_indent = 2) %>%
           footnote(
