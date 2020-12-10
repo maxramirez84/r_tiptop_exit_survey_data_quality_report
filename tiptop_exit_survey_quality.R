@@ -165,7 +165,10 @@ Union <- function(...) {
         dat[i, j] <- aux[[i]][j] 
     }
   }
-  dat <- dat[, order(names(dat))]
+  
+  if (length(dat) > 1) {
+    dat <- dat[, order(names(dat))]
+  }
   dat <- rapply(dat, f = function(x) ifelse(is.na(x), 0, x), how = "replace")
   return(dat)
 }
