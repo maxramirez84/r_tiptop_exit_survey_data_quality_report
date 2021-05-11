@@ -116,7 +116,7 @@ NumberOfParticipantsWhoConsented <- function(data) {
   consent.table <- table(data$consent)
   
   if (length(consent.table) > 0){
-    consented <- consent.table[1] # consent = yes
+    consented <- consent.table['1'] # consent = yes
   } else {
     consented <- 0
   }
@@ -226,7 +226,8 @@ ProgressOfArea <- function(data, study.area.column, study.area.label, interval,
 
 
 SurveyProfileOfHealthFacility <- function(exit.survey.data, health.system.data,
-                                          study.area.column, facility, lang) {
+                                          study.area.column, facility, lang,
+                                          less.than = 18) {
   # Produce and print a Kable with the survey profile of a concrete health 
   # facility in which inconsistencies are identified and displyed in red with a 
   # tooltip describing the problem.
@@ -271,8 +272,23 @@ SurveyProfileOfHealthFacility <- function(exit.survey.data, health.system.data,
   
   # Row five of survey profile - Eligible women (that meet criteria 1 and 2)
   # selected for an interview
+  less.than.18 <- (
+    hf.data$less_than_18_years_old == 0 |  # Solved bug DQS20210210
+      (hf.data$less_than_18_years_old == 1 & 
+         hf.data$less_than_18_accompanied == 1)) 
+  less.than.15 <- (
+    hf.data$less_than_15_years_old == 0 |
+      (hf.data$less_than_15_years_old == 1 & 
+         hf.data$less_than_15_accompanied == 1)) 
+  
+  less.than.years <- less.than.18
+  if (less.than == 15)
+    less.than.years <- less.than.15
+  
   eligible.women <- table(hf.data[
-    which(hf.data$pregnant_woman == 1 & hf.data$anc_visit == 1 & 
+    which(hf.data$pregnant_woman == 1 & 
+            hf.data$anc_visit == 1 & 
+            less.than.years &
             hf.data$resident_during_pregnancy == 1), 
     'interview_only_date'
   ])
@@ -463,7 +479,8 @@ GetDuplicatedWomen <- function(data, study.area.column, study.area.label,
   reused.and.duplicated <- intersect(reused.woman.ids[key.columns], 
                                      dup.records[key.columns])
   
-  if (nrow(reused.and.duplicated) > 0) {
+  if (nrow(reused.and.duplicated) > 0 & 
+      ncol(reused.and.duplicated) == length(key.columns)) {
     for (i in 1:nrow(reused.and.duplicated)) {
       if (!is.na(reused.and.duplicated[i, column.facility])) {
         a <- dup.records[column.facility] == 
