@@ -1,0 +1,171 @@
+---
+output: 
+  html_document: 
+    css: style.css
+---
+```{r parameters, include=FALSE}
+library(htmltools)
+
+source("tiptop_exit_survey_quality.R")
+source("lang.R")
+source("tokens.R")
+
+# Report language
+kReportLang <- "EN"
+language <- kLang[[kReportLang]]
+
+# Data retrieval: {api, file}
+data.retrieval.mode <- "api"
+
+# API
+api.url   <- kREDCapAPIURL
+# TIPTOP Cost-Effectiveness Exit Survey DRC
+api.token.exit.survey <- kAPITokenNIGES
+# TIPTOP Cost-Effectiveness Health System DRC
+api.token.health.systems <- kAPITokenNIGHS 
+
+# File
+file.prefix  <- "DATA/DATA_WITH_NO_DUPS/XXX"
+file.content <- "_DATA_WITH_NO_DUPS_"
+file.date    <- "2018-06-19"
+file.time    <- "15:42"
+
+# Varibles in dataset to be excluded and therefore not extracted
+non.retrieved.variables <- c()
+
+# Partner information
+partner.name <- "University of Calabar"
+partner.url  <- "https://www.unical.edu.ng/"
+
+# Study area description
+country           <- "Nigeria"
+study.area.id     <- 3
+study.area.label  <- "Bosso"
+study.area.column <- "bosso"
+sample.size       <- 142
+hf.to.be.surveyed <- 18
+
+report.title <- paste(language$head.survey, '-', language$head.report, ':', country, '-', study.area.label)
+data.timestamp <- DataTimestamp(data.retrieval.mode, file.date, file.time)
+```
+---
+title: "`r report.title`"
+author: "Máximo Ramírez Robles"
+date: "`r data.timestamp`"
+---
+
+```{r out.width="30px", echo=FALSE}
+knitr::include_graphics("github_icon.png")
+```
+[`r language$head.github`](https://github.com/maxramirez84/r_tiptop_exit_survey_data_quality_report)
+
+```{r setup, include=FALSE}
+# Retrieve Exit Survey data, filter it by study area and remove empty records
+exit.survey.data <- ReadData(data.retrieval.mode, file.prefix, file.content, 
+                             file.date, file.time, api.url, 
+                             api.token.exit.survey, non.retrieved.variables)
+exit.survey.data <- exit.survey.data[exit.survey.data$district == 
+                                       study.area.id, ]
+exit.survey.data <- exit.survey.data[!is.na(exit.survey.data$record_id), ]
+
+# Retrive Health System data, filter it by study area and remove empty records
+health.system.data <- ReadData(data.retrieval.mode, file.prefix, file.content, 
+                               file.date, file.time, api.url, 
+                               api.token.health.systems, 
+                               non.retrieved.variables)
+health.system.data <- health.system.data[health.system.data$district == 
+                                           study.area.id, ]
+health.system.data <- health.system.data[!is.na(health.system.data$record_id), ]
+
+last.record.date <- LastRecordDate(exit.survey.data)
+number.of.records <- NumberOfRecords(exit.survey.data)
+```
+
+## `r language$progress.title`
+
+`r sprintf(language$progress.records, number.of.records)` 
+(`r sprintf(language$progress.last, last.record.date)`).
+
+`r language$progress.partner` [`r partner.name`](`r partner.url`).
+
+```{r recruited.women.area, echo=FALSE}
+consented <- NumberOfParticipantsWhoConsented(exit.survey.data)
+recruitment <- RecruitmentRate(exit.survey.data, sample.size)
+```
+
+### `r language$progress.subtitle1`
+
+<div class="col-left text-center">
+  `r language$progress.women` @ `r study.area.label`
+
+  <span class="big-number">`r recruitment`%</span>
+
+  `r consented` / `r sample.size`
+</div>
+
+```{r progress.area, echo=FALSE}
+ProgressOfArea(exit.survey.data, study.area.column, study.area.label, 
+               interval = 10, approaches.mean = 30, lang = language)
+```
+
+## `r sprintf(language$profile.title, toupper(study.area.label))`
+
+```{r survey.profile.area, echo=FALSE, results="asis"}
+# Print a profile table for each health facility
+column <- paste0("facility_", study.area.column)
+for (hf in sort(unique(exit.survey.data[[column]]))) {
+  hf.code <- sprintf(language$progress.plot.hf, hf)
+  subtitle <- h3(
+    img(src = "hf.png", width = "30px", style = "vertical-align: bottom;"),
+    sprintf(language$profile.subtitle1, hf.code)
+  )
+  print(subtitle)
+  SurveyProfileOfHealthFacility(exit.survey.data, health.system.data, 
+                                study.area.column, hf, language)
+}
+```
+
+## `r language$dups.title`
+
+### `r language$dups.subtitle1`
+`r language$dups.desc1`
+
+```{r duplicated.women, echo=FALSE}
+DuplicatedWomen(exit.survey.data, study.area.column, study.area.label, language)
+```
+
+### `r language$dups.subtitle2`
+`r language$dups.desc2`
+
+```{r duplicated.records, echo=FALSE}
+DuplicatedRecords(exit.survey.data, study.area.column, study.area.label, 
+                  language)
+```
+
+## `r language$indicators.title`
+
+<span style="color: red"><b>`r language$indicators.impt`:</b></span>
+`r language$indicators.desc`
+
+### `r language$indicators.subtitle1`
+
+<div class="col-container">
+```{r mip.indicators, echo=FALSE}
+mip.rate <- MiPRate(exit.survey.data)
+mip.hosp.rate <- HospitalizedMiPRate(exit.survey.data)
+```
+
+<div class="col-left text-center">
+  <div class="col-container">
+  <div class="col-left col-bottom text-right vertical-small-padding text-color-medium-value">
+  <span class="medium-number">`r mip.rate`%</span><br/>
+  `r language$indicators.header1`
+  </div>
+  <div class="col-right text-left vertical-small-padding text-color-big-value">
+  <span class="big-number">`r mip.hosp.rate`%</span><br/>
+  `r language$indicators.header2`
+  </div>
+  </div>
+</div>
+<br/>
+------
