@@ -39,11 +39,11 @@ partner.url  <- "http://www.begis-congo.net"
 
 # Study area description
 country           <- "RDC"
-study.area.id     <- 1
-study.area.label  <- "Kenge"
-study.area.column <- "kenge"
+study.area.id     <- 3
+study.area.label  <- "Kunda"
+study.area.column <- "kunda"
 sample.size       <- 142
-hf.to.be.surveyed <- 8
+hf.to.be.surveyed <- 9
 
 report.title <- paste(language$head.survey, '-', language$head.report, ':', country, '-', study.area.label)
 data.timestamp <- DataTimestamp(data.retrieval.mode, file.date, file.time)
