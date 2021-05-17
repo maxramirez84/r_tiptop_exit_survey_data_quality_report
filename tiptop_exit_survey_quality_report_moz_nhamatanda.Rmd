@@ -77,6 +77,11 @@ health.system.data <- health.system.data[health.system.data$district ==
                                            study.area.id, ]
 health.system.data <- health.system.data[!is.na(health.system.data$record_id), ]
 
+# Osvldo sent training records from the field that must be discarded. 
+# Data collection started on 10/05/2021
+exit.survey.data <- exit.survey.data[which(exit.survey.data$interview_date >= '2021-05-10'), ]
+health.system.data <- health.system.data[which(health.system.data$interview_date >= '2021-05-10'), ]
+
 last.record.date <- LastRecordDate(exit.survey.data)
 number.of.records <- NumberOfRecords(exit.survey.data)
 ```
