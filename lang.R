@@ -149,7 +149,7 @@ kLang <- list(
     progress.plot.hf     = "CS%s",
     progress.no.data     = "Não há dados",
     profile.title        = "PERFIL DO INQUERITO EM %s",
-    profile.subtitle1    = "Peril de %s",
+    profile.subtitle1    = "Perfil de %s",
     profile.row2         = "# Mulheres abordadas para o inquerito",
     profile.row3         = "# Mulheres abordadas que atendem ao critério 1",
     profile.row4         = "# Mulheres abordadas que atendem ao critério 2",
