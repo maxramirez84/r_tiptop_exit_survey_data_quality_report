@@ -279,7 +279,10 @@ SurveyProfileOfHealthFacility <- function(exit.survey.data, health.system.data,
   less.than.15 <- (
     hf.data$less_than_15_years_old == 0 |
       (hf.data$less_than_15_years_old == 1 & 
-         hf.data$less_than_15_accompanied == 1)) 
+         hf.data$less_than_15_accompanied == 1) |
+      (hf.data$less_than_15_years_old == 1 &  # Solved bug DQS20210706 
+         hf.data$less_than_15_accompanied == 0 &
+         hf.data$less_than_15_married == 1)) 
   
   less.than.years <- less.than.18
   if (less.than == 15)
